@@ -1,0 +1,13 @@
+app:
+  host: "0.0.0.0"
+  port: 9900
+db:
+  host: "localhost"
+  name: "test"
+  user: "admin"
+  pass: "admin"
+  port: 6532
+  pool_size: 8
+  conn_dial_timeout: 40
+  conn_read_timeout: 40
+  conn_write_timeout: 40

@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  server:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    container_name: app
+    volumes:
+      - ./configs/stg_config.yaml:/app/configs/config.yaml
+#    extra_hosts:
+#      - host.docker.internal:host-gateway
+    ports:
+      - "9900:9900"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    networks:
+      - mynetwork
+
+  db:
+    image: postgres:15
+    container_name: pg-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: test
+    ports:
+      - "6532:5432"
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      retries: 5
+    restart: always
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
